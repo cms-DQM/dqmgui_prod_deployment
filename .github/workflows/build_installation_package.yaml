@@ -50,11 +50,11 @@ jobs:
 
             Used:
 
-            * DMWM_GIT_TAG=$DMWM_GIT_TAG
-            * DMWM_GIT_URL=$DMWM_GIT_URL
-            * DQMGUI_GIT_TAG=$DQMGUI_GIT_TAG
-            * ROOT_GIT_URL=$ROOT_GIT_URL
-            * ROOT_GIT_TAG=$ROOT_GIT_TAG
+            * DMWM_GIT_TAG=${{ env.DMWM_GIT_TAG }}
+            * DMWM_GIT_URL=${{ env.DMWM_GIT_URL }}
+            * DQMGUI_GIT_TAG=${{ env.DQMGUI_GIT_TAG }}
+            * ROOT_GIT_URL=${{ env.ROOT_GIT_URL }}
+            * ROOT_GIT_TAG=${{ env.ROOT_GIT_TAG }}
             "
-          tag: "DMWM_$DMWM_GIT_TAG_DQMGUI=$DQMGUI_GIT_TAG_ROOT_$ROOT_GIT_TAG"
+          tag: "deployment_${{ env.DMWM_GIT_TAG }}_dqmgui=${{ env.DQMGUI_GIT_TAG }}_root_${{ env.ROOT_GIT_TAG }}"
           allowUpdates: "true"
