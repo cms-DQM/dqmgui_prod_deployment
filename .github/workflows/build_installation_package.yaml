@@ -16,8 +16,8 @@ jobs:
           DMWM_GIT_URL: ${{ vars.DMWM_GIT_URL }}
           DQMGUI_GIT_TAG: ${{ vars.DQMGUI_GIT_TAG }}
           DQMGUI_GIT_URL: ${{ vars.DQMGUI_GIT_URL }}
-          ROOT_GIT_URL: ${{ vars.DQMGUI_GIT_TAG }}
-          ROOT_GIT_TAG: ${{ vars.DQMGUI_GIT_URL }}
+          ROOT_GIT_URL: ${{ vars.ROOT_GIT_URL }}
+          ROOT_GIT_TAG: ${{ vars.ROOT_GIT_TAG }}
         run: |
           sudo apt update && sudo apt install -y libcurl4-gnutls-dev
           $(which python3) --version
