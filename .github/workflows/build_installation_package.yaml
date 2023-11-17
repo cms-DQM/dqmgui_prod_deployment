@@ -11,13 +11,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Download and compress dependencies
-        env:
-          DMWM_GIT_TAG: ${{ env.DMWM_GIT_TAG }}
-          DMWM_GIT_URL: ${{ env.DMWM_GIT_URL }}
-          DQMGUI_GIT_TAG: ${{ env.DQMGUI_GIT_TAG }}
-          DQMGUI_GIT_URL: ${{ env.DQMGUI_GIT_URL }}
-          ROOT_GIT_URL: ${{ env.DQMGUI_GIT_TAG }}
-          ROOT_GIT_TAG: ${{ env.DQMGUI_GIT_URL }}
         run: |
           sudo apt update && sudo apt install -y libcurl4-gnutls-dev
           $(which python3) --version
@@ -54,6 +47,6 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "/tmp/dqmgui/dqmgui_installation_package.tar.gz"
-          body: "/tmp/release_body.md"
+          bodyFile: "/tmp/release_body.md"
           tag: ${{ env.RELEASE_TAG }}
           allowUpdates: "true"
