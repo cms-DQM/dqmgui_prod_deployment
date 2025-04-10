@@ -51,6 +51,9 @@ DMWM_PRS_URL_BASE="https://github.com/dmwm/deployment/pull"
 # Comma-separated DMWM PRs to apply. E.g., 1312,1315
 DMWM_PRS=
 
+# Where the keytab should be found
+WMCORE_AUTH_DIR="$HOME/auth/wmcore-auth/"
+
 # Function to sanitize args to a folder name
 # From here: https://stackoverflow.com/a/44811468/6562491
 # echoes "null" if no input given.
@@ -195,6 +198,27 @@ install_crontab() {
     _install_crontab_vocms
 }
 
+# Copy CMSWEB-only required auth files
+# This was originally done by installing the appropriate package,
+# but since this deployment script is completely custom, it is now
+# done "manually". The keytab and header-auth-key files are expected
+# to be found in WMCORE_AUTH_DIR
+copy_wmcore_auth() {
+    FLAVOR="${SPECIAL_HOSTS[$HOST]}"
+    if [ -z "$FLAVOR" ]; then
+        echo "INFO: Not a vocms machine, not copying wmcore auth"
+        return
+    fi
+    if [ ! -d "$WMCORE_AUTH_DIR" ]; then
+        echo "WARNING: $WMCORE_AUTH_DIR was not found, cannot copy auth files"
+        return
+    fi
+    echo "INFO: Copying wmcore-auth files"
+    mkdir -p "$INSTALLATION_DIR/$DMWM_GIT_TAG/auth/wmcore-auth"
+    cp "$WMCORE_AUTH_DIR/"{keytab,header-auth-key} "$INSTALLATION_DIR/$DMWM_GIT_TAG/auth/wmcore-auth"
+
+}
+
 # Create necessary directories for installation
 create_directories() {
     # Dirs to create under INSTALLATION_DIR
@@ -225,7 +249,7 @@ create_directories() {
     done
 
     # Dirs to create under DMWM_GIT_TAG dir
-    declare -a necessary_dirs=("config" "sw" "apps.sw")
+    declare -a necessary_dirs=("config" "sw" "apps.sw" "auth")
     for subdir in "${necessary_dirs[@]}"; do
         dirname="$INSTALLATION_DIR/$DMWM_GIT_TAG/$subdir"
         echo "DEBUG: Creating subdirectory $dirname"
@@ -645,6 +669,7 @@ function _cleanup() {
 declare -a installation_steps=(preliminary_checks
     check_dependencies
     create_directories
+    copy_wmcore_auth
     install_boost_gil
     install_gil_numeric
     install_rotoglup
