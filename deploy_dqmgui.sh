@@ -63,7 +63,7 @@ _sanitize_string() {
     echo "${s,,}"            # convert to lowercase
 }
 
-# oary checks to do before installing the GUI
+# Preliminary checks to do before installing the GUI
 preliminary_checks() {
     # Display all commands if asked to
     if [ "$VERBOSE_LOGGING" -ne 0 ]; then
