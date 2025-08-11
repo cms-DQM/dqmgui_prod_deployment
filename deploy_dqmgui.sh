@@ -194,6 +194,10 @@ install_crontab() {
         echo "17 2 * * * $INSTALLATION_DIR/current/config/dqmgui/daily"
         echo "HOME=/tmp" # Workaround for P5, where the home dir is an NFS mount and isn't immediately available.
         echo "@reboot (sleep 30 && $INSTALLATION_DIR/current/config/dqmgui/manage sysboot)"
+        # If the workaround script for managing free memory exists, add a crontab for it to run every 2 hours.
+        if [ -f "$INSTALLATION_DIR/current/config/dqmgui/restart_webserver_if_memory_low" ]; then
+            echo "30 */2 * * * $INSTALLATION_DIR/current/config/dqmgui/restart_if_memory_low  >> /data/srv/logs/dqmgui/restart_if_memory_low.log"
+        fi
     ) | crontab -
     _install_crontab_vocms
 }
