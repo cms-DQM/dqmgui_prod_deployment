@@ -26,6 +26,9 @@ VERBOSE_LOGGING=0
 # Main directory we're installing into.
 INSTALLATION_DIR=/data/srv
 
+# Remember the directory where the script was called from
+CALLER_DIRECTORY=$PWD
+
 # Default value set for each step flag. Set this to 0 to skip all steps.
 # This helps if you want to only run only a few steps of the installation only.
 EXECUTE_ALL_STEPS=1
@@ -661,9 +664,9 @@ compile_root() {
 }
 
 function copy_env_file() {
-    if [ -f ".env" ]; then
+    if [ -f "$CALLER_DIRECTORY/.env" ]; then
         echo "Copying .env file to state dir"
-        cp ".env" "$INSTALLATION_DIR/state/dqmgui"
+        cp "$CALLER_DIRECTORY/.env" "$INSTALLATION_DIR/state/dqmgui"
         chmod 400 "$INSTALLATION_DIR/state/dqmgui/.env"
     else
         echo ".env file not found, skipping this step"
