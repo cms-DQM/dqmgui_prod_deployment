@@ -199,7 +199,7 @@ install_crontab() {
         echo "@reboot (sleep 30 && $INSTALLATION_DIR/current/config/dqmgui/manage sysboot)"
         # If the workaround script for managing free memory exists, add a crontab for it to run every 2 hours.
         if [ -f "$INSTALLATION_DIR/current/config/dqmgui/restart_webserver_if_memory_low" ]; then
-            echo "30 */2 * * * $INSTALLATION_DIR/current/config/dqmgui/restart_if_memory_low  >> /data/srv/logs/dqmgui/restart_if_memory_low.log"
+            echo "30 */2 * * * $INSTALLATION_DIR/current/config/dqmgui/restart_webserver_if_memory_low  >> /data/srv/logs/dqmgui/restart_webserver_if_memory_low.log"
         fi
     ) | crontab -
     _install_crontab_vocms
