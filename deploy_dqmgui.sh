@@ -660,6 +660,17 @@ compile_root() {
     rm -rf $ROOT_TMP_DIR $ROOT_TMP_BUILD_DIR
 }
 
+function copy_env_file() {
+    if [ -f ".env" ]; then
+        echo "Copying .env file to state dir"
+        cp ".env" "$INSTALLATION_DIR/state/dqmgui"
+        chmod 400 "$INSTALLATION_DIR/state/dqmgui/.env"
+    else
+        echo ".env file not found, skipping this step"
+    fi
+
+}
+
 # Cleanup temporary directories, remove cronjobs
 function _cleanup() {
     rm -rf $ROOT_TMP_DIR $ROOT_TMP_BUILD_DIR $ROTOGLUP_TMP_DIR $CLASSLIB_TMP_DIR $DMWM_TMP_DIR $NUMERIC_TMP_DIR $DQMGUI_TMP_DIR
@@ -673,6 +684,7 @@ function _cleanup() {
 declare -a installation_steps=(preliminary_checks
     check_dependencies
     create_directories
+    copy_env_file
     copy_wmcore_auth
     install_boost_gil
     install_gil_numeric
