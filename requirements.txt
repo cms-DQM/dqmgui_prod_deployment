@@ -12,3 +12,4 @@ matplotlib<3.8.0
 pillow<11.0.0
 Cheetah3<3.3.0
 virtualenv
+cernrequests
