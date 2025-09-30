@@ -666,6 +666,9 @@ compile_root() {
 function copy_env_file() {
     if [ -f "$CALLER_DIRECTORY/.env" ]; then
         echo "Copying .env file to state dir"
+        if [ -f "$INSTALLATION_DIR/state/dqmgui/.env" ]; then
+            rm -f "$INSTALLATION_DIR/state/dqmgui/.env"
+        fi
         cp "$CALLER_DIRECTORY/.env" "$INSTALLATION_DIR/state/dqmgui"
         chmod 400 "$INSTALLATION_DIR/state/dqmgui/.env"
     else
