@@ -647,7 +647,8 @@ install_jsroot() {
 
 # Extract the ROOT tar to a tmp folder for compilation
 install_root() {
-    if source "$ROOT_INSTALLATION_DIR/bin/thisroot.sh"; then
+    if [ -f "$ROOT_INSTALLATION_DIR/bin/thisroot.sh" ] &&
+        source "$ROOT_INSTALLATION_DIR/bin/thisroot.sh"; then
         echo "INFO: ROOT installation found, not installing ROOT"
         return
     fi
@@ -656,7 +657,8 @@ install_root() {
 }
 
 compile_root() {
-    if source "$ROOT_INSTALLATION_DIR/bin/thisroot.sh"; then
+    if [ -f "$ROOT_INSTALLATION_DIR/bin/thisroot.sh" ] &&
+        source "$ROOT_INSTALLATION_DIR/bin/thisroot.sh"; then
         echo "INFO: ROOT installation found, not re-compiling ROOT"
         return
     fi
