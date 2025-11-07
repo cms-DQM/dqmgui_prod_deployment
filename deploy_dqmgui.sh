@@ -356,7 +356,7 @@ extract_boost_gil() {
 patch_boost_gil() {
     (
         cd "${TMP_BASE_PATH}/boost_gil"
-        patch -p1 <"$SCRIPT_DIR/gil/01.patch"
+        patch -p1 <"$SCRIPT_DIR/boost_gil/01.patch"
     )
 }
 
