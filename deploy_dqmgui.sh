@@ -687,6 +687,12 @@ function copy_env_file() {
 
 }
 
+# Configure the environment for building DQMGUI.
+function configure_environment() {
+    # Enable gcc9. Needs gcc-toolset-9 installed.
+    source scl_source enable gcc-toolset-9
+}
+
 # Cleanup temporary directories, remove cronjobs
 function _cleanup() {
     rm -rf $ROOT_TMP_DIR $ROOT_TMP_BUILD_DIR $ROTOGLUP_TMP_DIR $CLASSLIB_TMP_DIR $DMWM_TMP_DIR $NUMERIC_TMP_DIR $DQMGUI_TMP_DIR
@@ -698,6 +704,7 @@ function _cleanup() {
 # Declare each step of the installation procedure here. Steps
 # will be executed sequentially.
 declare -a installation_steps=(preliminary_checks
+    configure_environment
     check_dependencies
     create_directories
     copy_env_file
