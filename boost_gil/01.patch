@@ -1,0 +1,34 @@
+diff --git a/include/boost/gil/channel_algorithm.hpp b/include/boost/gil/channel_algorithm.hpp
+index 1361219a3..b8396ec32 100644
+--- a/include/boost/gil/channel_algorithm.hpp
++++ b/include/boost/gil/channel_algorithm.hpp
+@@ -30,6 +30,10 @@
+ #include <boost/mpl/greater.hpp>
+ #include <boost/type_traits.hpp>
+ 
++#if __cplusplus >= 201703L
++#include <limits>
++#endif 
++
+ namespace boost { namespace gil {
+ 
+ //#ifdef _MSC_VER
+@@ -49,9 +53,17 @@ template <typename SrcChannelV, typename DstChannelV, bool SrcLessThanDst, bool
+ ////  unsigned_integral_max_value - given an unsigned integral channel type, returns its maximum value as an MPL integral constant
+ //////////////////////////////////////
+ 
+-
++#if __cplusplus >= 201703L
++template <typename UnsignedIntegralChannel>
++struct unsigned_integral_max_value
++  : public mpl::integral_c<UnsignedIntegralChannel,
++                           static_cast<UnsignedIntegralChannel>(
++                             std::numeric_limits<UnsignedIntegralChannel>::max()
++                           )> {};
++#else
+ template <typename UnsignedIntegralChannel>
+ struct unsigned_integral_max_value : public mpl::integral_c<UnsignedIntegralChannel,-1> {};
++#endif
+ 
+ template <>
+ struct unsigned_integral_max_value<uint8_t> : public mpl::integral_c<uint32_t,0xFF> {};

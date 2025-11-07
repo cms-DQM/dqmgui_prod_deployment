@@ -348,9 +348,19 @@ install_classlib() {
     rm -rf $CLASSLIB_TMP_DIR
 }
 
-install_boost_gil() {
+extract_boost_gil() {
     mkdir -p $INSTALLATION_DIR/$DMWM_GIT_TAG/sw/external/src/
     tar -xzf "$SCRIPT_DIR/boost_gil/boost_gil.tar.gz" -C "${TMP_BASE_PATH}"
+}
+
+patch_boost_gil() {
+    (
+        cd "${TMP_BASE_PATH}/boost_gil"
+        patch -p1 <"$SCRIPT_DIR/gil/01.patch"
+    )
+}
+
+install_boost_gil() {
     rm -rf "$INSTALLATION_DIR/$DMWM_GIT_TAG/sw/external/src/boost" # Cleanup dir if exists
     mv "${TMP_BASE_PATH}/boost_gil/include/boost" "$INSTALLATION_DIR/$DMWM_GIT_TAG/sw/external/src/boost"
 }
@@ -692,6 +702,8 @@ declare -a installation_steps=(preliminary_checks
     create_directories
     copy_env_file
     copy_wmcore_auth
+    extract_boost_gil
+    patch_boost_gil
     install_boost_gil
     install_gil_numeric
     install_rotoglup
