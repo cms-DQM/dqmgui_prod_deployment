@@ -20,27 +20,6 @@ DMWM_GIT_TAG=master
 DQMGUI_GIT_URL=https://github.com/cms-DQM/dqmgui_prod
 DQMGUI_GIT_TAG=10.0.0
 
-# Boost.GIL. At most version 1.67!! The API changed radically after that.
-BOOST_GIL_GIT_URL=https://github.com/boostorg/gil
-BOOST_GIL_GIT_TAG=boost-1.66.0
-
-# OLD rotoglup code. Commit was found with lots of pain, so that the patch
-# applies: https://github.com/cms-sw/cmsdist/blob/comp_gcc630/dqmgui-rtgu.patch
-ROTOGLUP_GIT_URL=https://github.com/rotoglup/rotoglup-scratchpad
-ROTOGLUP_GIT_TAG=d8ce23aecd0b1fb7d45c9bedb615abdab27a5494
-
-# Yahoo!(TM) UI
-YUI_GIT_URL=https://github.com/yui/yui2
-YUI_GIT_TAG=master
-
-# Extjs
-EXTJS_GIT_URL=https://github.com/probonogeek/extjs
-EXTJS_GIT_TAG=3.1.1
-
-# D3
-D3_GIT_URL=https://github.com/d3/d3
-D3_GIT_TAG=v2.7.4
-
 # JSROOT
 JSROOT_GIT_URL=https://github.com/root-project/jsroot
 JSROOT_GIT_TAG=6.3.4

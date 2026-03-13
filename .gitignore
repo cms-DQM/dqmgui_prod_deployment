@@ -1,2 +1,8 @@
 *~
 *.tar.gz
+!d3/d3.tar.gz
+!extjs/extjs.tar.gz
+!yui/yui.tar.gz
+!rotoglup/rotoglup.tar.gz
+!boost_gil/boost_gil.tar.gz
+!numeric/numeric.tar.gz
