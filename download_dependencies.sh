@@ -139,7 +139,8 @@ else
 fi
 
 # For GitHub repos, clone the source on a specific branch/tag/ref, then make a tar.
-declare -a repos_to_download=(rotoglup boost_gil dmwm dqmgui yui extjs d3 jsroot root)
+# rotoglup, yui, extjs, d3 and boost_gil are bundled in the repo as tar.gz files and do not need to be downloaded.
+declare -a repos_to_download=(dmwm dqmgui jsroot root)
 
 # Create dynamic flags to selectively disable/enable steps of the download procedure
 # Those flags are named "do_download" with the name of the repo, e.g. "do_download_root" for
