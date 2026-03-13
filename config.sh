@@ -18,7 +18,7 @@ DMWM_GIT_TAG=master
 # DQMGUI tag to use, see https://github.com/cms-DQM/dqmgui_prod/tags
 # Overriden by GitHub actions secrets.
 DQMGUI_GIT_URL=https://github.com/cms-DQM/dqmgui_prod
-DQMGUI_GIT_TAG=10.0.0
+DQMGUI_GIT_TAG=10.5.1
 
 # JSROOT
 JSROOT_GIT_URL=https://github.com/root-project/jsroot
