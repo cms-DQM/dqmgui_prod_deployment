@@ -15,7 +15,7 @@
 #
 # Required tools: patch, curl (if patching DMWM directly from github PRs)
 #
-# Contact: cms-dqm-coreteam@cern.ch
+# Contact: cms-PPD-technical-support@cern.ch
 
 # Stop at any non-zero return
 set -e
@@ -33,12 +33,38 @@ CALLER_DIRECTORY=$PWD
 # This helps if you want to only run only a few steps of the installation only.
 EXECUTE_ALL_STEPS=1
 
-#
-declare -A SPECIAL_HOSTS=(
+# vocms hosts requiring dedicated cron/auth steps (EOS kinit, wmcore auth files, keytab path)
+declare -a SPECIAL_HOSTS=(
+    "vocms0730"
+    "vocms0736"
+    "vocms0737"
+    "vocms0732"
+)
+
+# vocms hosts that get backup crontabs installed, mapped to the human-readable
+# "flavor" name used in backup mail subjects and log paths (e.g. "dev DQM GUI
+# Index Backup" / logs/dqmgui/dev/...). Deliberately excludes vocms0732
+# (historical offsite online), which does not get backups.
+declare -A BACKUP_HOSTS=(
     ["vocms0730"]="dev"
     ["vocms0736"]="offline"
     ["vocms0737"]="relval"
 )
+
+# Whether $HOST is one of the special vocms hosts listed in SPECIAL_HOSTS
+_is_special_host() {
+    local host
+    for host in "${SPECIAL_HOSTS[@]}"; do
+        [ "$host" == "$HOST" ] && return 0
+    done
+    return 1
+}
+
+# Echoes $HOST's backup flavor name (see BACKUP_HOSTS), or nothing if $HOST
+# isn't a backup host
+_get_backup_flavor() {
+    echo "${BACKUP_HOSTS[$HOST]}"
+}
 
 # This scipt's directory
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
@@ -152,8 +178,7 @@ check_dependencies() {
 
 # Clean VOCMS-specific crontabs
 _clean_crontab_vocms() {
-    FLAVOR="${SPECIAL_HOSTS[$HOST]}"
-    if [ -z "$FLAVOR" ]; then
+    if ! _is_special_host; then
         echo "INFO: Not a vocms machine, not cleaning vocms crontabs"
         return
     fi
@@ -170,8 +195,7 @@ clean_crontab() {
 
 # Crontabs specific to VOCMS
 _install_crontab_vocms() {
-    FLAVOR="${SPECIAL_HOSTS[$HOST]}"
-    if [ -z "$FLAVOR" ]; then
+    if ! _is_special_host; then
         echo "INFO: Not a vocms machine, not installing vocms crontabs"
         return
     fi
@@ -180,6 +204,18 @@ _install_crontab_vocms() {
         # Adding kinit script for EOS
         echo "*/6 * * * * $INSTALLATION_DIR/current/config/dqmgui/kinit.sh"
         echo "@reboot $INSTALLATION_DIR/current/config/dqmgui/kinit.sh"
+    ) | crontab -
+}
+
+# Crontabs for backup
+_install_backup_crontabs() {
+    FLAVOR="$(_get_backup_flavor)"
+    if [ -z "$FLAVOR" ]; then
+        echo "INFO: Not a machine to install backup crontabs"
+        return
+    fi
+    (
+        crontab -l # Get existing crontabs
         # backup of the index
         echo "0 7 * * * $INSTALLATION_DIR/current/config/dqmgui/manage indexbackup 'I did read documentation'; ret=\$?; if [ \$ret -ne 3 ] && [ \$ret -ne 0 ] && [ \$ret -ne 4 ]; then echo Error during backup | mailx -s \"$FLAVOR DQM GUI Index Backup, exit code: \$ret\" -a $INSTALLATION_DIR/logs/dqmgui/$FLAVOR/agent-castorindexbackup-$HOST.log cmsweb-operator@cern.ch; fi"
         # backup of the zipped root files
@@ -203,6 +239,7 @@ install_crontab() {
         fi
     ) | crontab -
     _install_crontab_vocms
+    _install_backup_crontabs
 }
 
 # Copy CMSWEB-only required auth files
@@ -211,8 +248,7 @@ install_crontab() {
 # done "manually". The keytab and header-auth-key files are expected
 # to be found in WMCORE_AUTH_DIR
 copy_wmcore_auth() {
-    FLAVOR="${SPECIAL_HOSTS[$HOST]}"
-    if [ -z "$FLAVOR" ]; then
+    if ! _is_special_host; then
         echo "INFO: Not a vocms machine, not copying wmcore auth"
         return
     fi
@@ -372,8 +408,7 @@ extract_dmwm() {
 # Update the keytab path in kinit.sh. This only applies for VOCMS deployments
 # which require access to EOS, therefore, need to run kinit.
 _update_keytab_path() {
-    FLAVOR="${SPECIAL_HOSTS[$HOST]}"
-    if [ -z "$FLAVOR" ]; then
+    if ! _is_special_host; then
         echo "INFO: Not a vocms machine, not updating kinit.sh"
         return
     fi
